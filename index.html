@@ -167,6 +167,8 @@ section{padding:96px 0 40px;scroll-margin-top:40px}
 .notoriety{height:10px;border-radius:5px;background:linear-gradient(90deg,#6fcf97 0 30%,#f2994a 30% 70%,#ff6b6b 70%);margin:10px 0 4px}
 .nt-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
 
+#snd{position:fixed;right:16px;bottom:16px;z-index:60;width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);background:rgba(10,13,28,.8);color:var(--gold2);font-size:18px;backdrop-filter:blur(4px);box-shadow:0 0 14px rgba(212,168,67,.25)}
+#snd.off{color:#777;border-color:#555;box-shadow:none}
 footer{margin-top:60px;border-top:1px solid var(--line);padding:30px 0 50px;text-align:center;color:var(--muted);font-size:13px}
 footer button{margin-top:10px;color:var(--gold);font-size:12px;letter-spacing:.15em;border:1px solid var(--line);padding:6px 14px;border-radius:4px}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s}
@@ -306,6 +308,9 @@ footer button{margin-top:10px;color:var(--gold);font-size:12px;letter-spacing:.1
     <button id="replay">로그인 화면 다시 보기</button>
   </div>
 </footer>
+
+<audio id="bgm" src="Celestial%20Dawn.mp3" loop preload="none"></audio>
+<button id="snd" class="off" aria-label="배경음악 켜기">♪</button>
 
 <div id="modal" role="dialog" aria-modal="true">
   <div class="mbox" id="mbox">
@@ -457,8 +462,21 @@ function showLogin(){
   $("#loading").classList.remove("on");$("#ldFill").style.width="0";$("#lgMain").style.display="flex";
   $("#login").classList.remove("hide");
 }
-$("#go").onclick=startLoad;
-$("#skip").onclick=enter;
+/* 배경음악 */
+const bgm=$("#bgm"),snd=$("#snd");let fadeT;
+let wantMusic=true;try{wantMusic=localStorage.getItem("astera-bgm")!=="off"}catch(e){}
+function setSnd(on){snd.classList.toggle("off",!on);snd.setAttribute("aria-label",on?"배경음악 끄기":"배경음악 켜기")}
+function playBgm(){
+  if(!wantMusic)return;
+  clearInterval(fadeT);bgm.volume=0;
+  bgm.play().then(()=>{setSnd(true);fadeT=setInterval(()=>{bgm.volume=Math.min(.45,bgm.volume+.03);if(bgm.volume>=.45)clearInterval(fadeT)},120)}).catch(()=>setSnd(false));
+}
+snd.onclick=()=>{
+  if(bgm.paused){wantMusic=true;try{localStorage.setItem("astera-bgm","on")}catch(e){}playBgm()}
+  else{wantMusic=false;try{localStorage.setItem("astera-bgm","off")}catch(e){}bgm.pause();setSnd(false)}
+};
+$("#go").onclick=()=>{playBgm();startLoad()};
+$("#skip").onclick=()=>{playBgm();enter()};
 $("#replay").onclick=showLogin;
 document.body.style.overflow="hidden";
 </script>
