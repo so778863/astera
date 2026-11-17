@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASTERA ONLINE</title>
+<meta name="description" content="성인 풀다이브 VR MMORPG 아스테라 — 이곳의 1G는 현실의 1원.">
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --navy:#141a33; --deep:#0a0d1c; --ink:#070912;
+  --gold:#d4a843; --gold2:#f3d98b; --lav:#b9a7ff; --sky:#9fb4ff;
+  --text:#ece8dc; --muted:#a3a6b8; --line:rgba(212,168,67,.28);
+  --safe:#6fcf97; --low:#8fc7ff; --mid:#f2c94c; --high:#f2994a; --pk:#ff6b6b; --wild:#c77dff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--text);font-family:Pretendard,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;overflow-x:hidden}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.en{font-family:Cinzel,serif;letter-spacing:.18em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ───── 로그인 ───── */
+#login{position:fixed;inset:0;z-index:50;overflow:hidden;background:var(--ink);transition:opacity .8s}
+#login.hide{opacity:0;pointer-events:none}
+.lg-bg{position:absolute;inset:-6%;background:url(img/loading.jpg) center/cover;animation:kb 26s ease-in-out infinite alternate}
+@keyframes kb{0%{transform:scale(1.02) translate(1.5%,0)}100%{transform:scale(1.14) translate(-2.5%,-1.5%)}}
+.lg-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(10,13,28,.15),rgba(7,9,18,.85) 75%),linear-gradient(transparent 55%,rgba(7,9,18,.95))}
+#dust{position:absolute;inset:0;pointer-events:none}
+.mote{position:absolute;bottom:-8px;width:3px;height:3px;border-radius:50%;background:#ffe9a8;box-shadow:0 0 6px #ffd56b;animation:rise linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:1}100%{transform:translateY(-105vh);opacity:0}}
+.lg-center{position:relative;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:20px}
+.logo-box{position:relative;width:min(560px,86vw);animation:logoIn 1.8s ease-out both}
+.logo-box img{width:100%;animation:glow 3.6s ease-in-out infinite,bob 6s ease-in-out infinite}
+@keyframes logoIn{0%{opacity:0;transform:scale(.88);filter:blur(10px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px rgba(185,167,255,.45))}50%{filter:drop-shadow(0 0 22px rgba(232,214,255,.95))}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -6px}}
+.twk{position:absolute;color:#fff6d8;text-shadow:0 0 10px #fff;animation:twk 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes twk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
+.sub{color:#d9d4ff;font-size:12px;letter-spacing:.5em;text-shadow:0 0 12px #000;margin-top:-6px}
+.servers{width:min(320px,86vw);display:flex;flex-direction:column;gap:6px;animation:fadeUp 1s 1.2s both}
+.sv{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;border:1px solid rgba(212,168,67,.3);border-radius:4px;background:rgba(10,13,28,.6);backdrop-filter:blur(4px);font-size:14px;transition:.2s}
+.sv:hover{border-color:var(--gold)}
+.sv.on{border-color:var(--gold);background:rgba(212,168,67,.16)}
+.sv small{font-size:12px}
+.go{width:min(320px,86vw);padding:13px;border-radius:4px;background:linear-gradient(#e8c36a,#c1922f);color:var(--navy);font-weight:700;letter-spacing:.4em;box-shadow:0 0 24px rgba(212,168,67,.45);animation:fadeUp 1s 1.4s both;transition:.2s}
+.go:hover{filter:brightness(1.1);box-shadow:0 0 34px rgba(212,168,67,.7)}
+.skip{position:absolute;top:16px;right:18px;font-size:12px;letter-spacing:.2em;color:var(--muted);border:1px solid rgba(255,255,255,.18);padding:5px 10px;border-radius:4px;z-index:2}
+.ver{position:absolute;left:18px;bottom:14px;font-size:11px;color:#777;letter-spacing:.1em}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:none}}
+
+/* 로딩 */
+#loading{position:absolute;inset:0;display:none;background:var(--deep)}
+#loading.on{display:block}
+.ld-art{position:absolute;inset:0;background-position:center 20%;background-size:cover;opacity:.55;filter:saturate(1.1)}
+.ld-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,9,18,.95) 0%,rgba(7,9,18,.55) 55%,rgba(7,9,18,.2)),linear-gradient(transparent 60%,rgba(7,9,18,.95))}
+.ld-info{position:absolute;left:6vw;bottom:16vh;max-width:520px}
+.ld-info .who{font-family:"Gowun Batang",serif;font-size:clamp(28px,5vw,44px);font-weight:700}
+.ld-info .cls{color:var(--gold);font-size:13px;letter-spacing:.2em}
+.ld-info q{display:block;margin-top:10px;font-family:"Gowun Batang",serif;font-size:17px;color:#e6e0ff}
+.ld-bar{position:absolute;left:6vw;right:6vw;bottom:7vh}
+.ld-tip{font-size:13px;color:var(--gold2);margin-bottom:8px}
+.track{height:6px;border:1px solid rgba(212,168,67,.55);border-radius:3px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,#c1922f,#f3d98b)}
+.pct{font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.1em}
+
+/* ───── 본문 ───── */
+header{position:sticky;top:0;z-index:20;background:rgba(10,13,28,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:18px;height:58px}
+.nav img{height:30px;width:auto}
+.nav nav{margin-left:auto;display:flex;gap:4px;overflow-x:auto}
+.nav nav a{color:var(--muted);text-decoration:none;font-size:14px;padding:6px 10px;border-radius:4px;white-space:nowrap}
+.nav nav a:hover,.nav nav a.on{color:var(--gold2)}
+@media(max-width:640px){.nav img{display:none}.nav nav{margin:0 auto}.nav nav a{font-size:13px;padding:6px 7px}}
+
+section{padding:96px 0 40px;scroll-margin-top:40px}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:28px}
+.sec-h .en{color:var(--gold);font-size:13px}
+.sec-h h2{font-family:"Gowun Batang",serif;font-size:clamp(24px,4vw,32px)}
+.sec-h::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:0}
+.hero::before{content:"";position:absolute;inset:0;background:url(img/loading.jpg) center/cover;opacity:.32;filter:blur(2px)}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 20%,var(--ink) 78%)}
+.hero .in{position:relative;z-index:1;padding:40px 20px}
+.hero img{width:min(520px,84vw);margin:0 auto 18px;filter:drop-shadow(0 0 16px rgba(185,167,255,.55))}
+.hero h1{font-family:"Gowun Batang",serif;font-size:clamp(22px,4vw,34px);font-weight:700}
+.hero h1 b{color:var(--gold2)}
+.hero p{color:var(--muted);margin-top:10px}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:-40px;position:relative;z-index:2}
+.feat{background:linear-gradient(160deg,rgba(20,26,51,.95),rgba(10,13,28,.95));border:1px solid var(--line);border-radius:8px;padding:20px}
+.feat .ic{color:var(--gold);font-size:22px}
+.feat h3{font-size:17px;margin:6px 0 4px}
+.feat p{font-size:14px;color:var(--muted)}
+
+/* 월드 */
+.tiers{display:grid;gap:18px}
+.tier{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start}
+.tier-n{padding-top:12px;font-weight:700;font-size:15px}
+.tier-n small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.regions{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.reg{border:1px solid rgba(255,255,255,.08);border-left:3px solid var(--c);border-radius:0;background:rgba(20,26,51,.55);padding:12px 14px}
+.reg b{font-size:16px}
+.reg p{font-size:13px;color:var(--muted);margin-top:2px}
+@media(max-width:640px){.tier{grid-template-columns:1fr}.tier-n{padding:0}}
+
+/* 길드 */
+.guilds{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.guild{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--deep);cursor:pointer}
+.guild .art{aspect-ratio:4/3;background-size:cover;background-position:center 25%;transition:transform .6s}
+.guild:hover .art{transform:scale(1.05)}
+.guild .bd{position:absolute;inset:auto 0 0 0;padding:60px 18px 16px;background:linear-gradient(transparent,rgba(7,9,18,.96) 45%)}
+.guild h3{font-family:Cinzel,serif;letter-spacing:.15em;color:var(--gold2)}
+.guild .tag{font-size:13px;color:var(--muted)}
+.guild .lead{font-size:13px;margin-top:6px}
+
+/* 유저 */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.filters button{font-size:13px;padding:6px 14px;border:1px solid rgba(255,255,255,.15);border-radius:999px;color:var(--muted)}
+.filters button.on{border-color:var(--gold);color:var(--gold2);background:rgba(212,168,67,.12)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+@media(max-width:520px){.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card .cl{font-size:10px}}
+.card{position:relative;border-radius:8px;overflow:hidden;background:var(--deep);border:1px solid rgba(255,255,255,.08);text-align:left;transition:transform .25s,border-color .25s}
+.card:hover{transform:translateY(-4px);border-color:var(--gold)}
+.card img{aspect-ratio:1;object-fit:cover;width:100%}
+.card .meta{position:absolute;inset:auto 0 0 0;padding:34px 12px 10px;background:linear-gradient(transparent,rgba(7,9,18,.95) 50%)}
+.card .nm{font-weight:700;font-size:15px}
+.card .cl{font-size:11px;color:var(--muted)}
+.card .badge{position:absolute;top:8px;left:8px;font-size:10px;letter-spacing:.1em;padding:2px 7px;border-radius:3px;background:rgba(212,168,67,.9);color:var(--navy);font-weight:700}
+
+/* 모달 */
+#modal{position:fixed;inset:0;z-index:40;display:none;align-items:center;justify-content:center;background:rgba(5,6,12,.82);padding:16px}
+#modal.on{display:flex}
+.mbox{position:relative;width:min(860px,100%);max-height:92vh;overflow:auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);background:linear-gradient(160deg,var(--navy),var(--deep));border:1px solid var(--gold);border-radius:10px;box-shadow:0 0 50px rgba(212,168,67,.18)}
+.mimg{position:relative;background:#000}
+.mimg img{width:100%;height:100%;object-fit:cover;min-height:320px;transition:opacity .35s}
+.mbody{padding:24px 24px 22px}
+.mbody .cls{color:var(--gold);font-size:12px;letter-spacing:.15em}
+.mbody h3{font-family:"Gowun Batang",serif;font-size:28px;line-height:1.3;margin:4px 0 10px}
+.mbody q{display:block;font-family:"Gowun Batang",serif;font-size:16px;color:#e6e0ff;border-left:2px solid var(--gold);padding-left:12px;margin:12px 0}
+.mbody dl{display:grid;grid-template-columns:72px 1fr;gap:6px 10px;font-size:14px;margin-top:10px}
+.mbody dt{color:var(--muted)}
+.mbody .desc{font-size:14px;color:#cfcbe0;margin-top:12px}
+.real-btn{margin-top:16px;width:100%;padding:10px;border:1px dashed var(--gold);border-radius:6px;color:var(--gold2);font-size:13px;letter-spacing:.08em}
+.real-btn:hover{background:rgba(212,168,67,.1)}
+.x{position:absolute;top:8px;right:10px;font-size:22px;color:var(--muted);z-index:2;width:36px;height:36px}
+.mbox.real .mbody{background:linear-gradient(160deg,#1b1b1f,#0e0e10)}
+.mbox.real{border-color:#888}
+@media(max-width:700px){.mbox{grid-template-columns:1fr}.mimg img{min-height:0;aspect-ratio:1}}
+
+/* 가이드 */
+.cmds{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:26px}
+.cmd{border:1px solid var(--line);border-radius:6px;background:var(--navy);padding:16px}
+.cmd code{font-family:inherit;color:var(--gold2);font-weight:700;font-size:16px}
+.cmd p{font-size:13px;color:var(--muted);margin-top:4px}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.rule{border:1px solid rgba(255,255,255,.08);border-radius:6px;background:rgba(20,26,51,.55);padding:16px 18px}
+.rule h4{font-size:15px;color:var(--gold2);margin-bottom:6px}
+.rule p,.rule li{font-size:13.5px;color:#cfcbe0}
+.rule ul{list-style:none;display:grid;gap:4px}
+.grade{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(255,255,255,.08);padding:3px 0}
+.notoriety{height:10px;border-radius:5px;background:linear-gradient(90deg,#6fcf97 0 30%,#f2994a 30% 70%,#ff6b6b 70%);margin:10px 0 4px}
+.nt-l{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+
+footer{margin-top:60px;border-top:1px solid var(--line);padding:30px 0 50px;text-align:center;color:var(--muted);font-size:13px}
+footer button{margin-top:10px;color:var(--gold);font-size:12px;letter-spacing:.15em;border:1px solid var(--line);padding:6px 14px;border-radius:4px}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div id="login" aria-label="로그인 화면">
+  <div class="lg-bg"></div>
+  <div class="lg-shade"></div>
+  <div id="dust"></div>
+  <button class="skip" id="skip">바로 입장 ▸▸</button>
+  <div class="lg-center" id="lgMain">
+    <div class="logo-box">
+      <img src="img/logo.png" alt="ASTERA">
+      <span class="twk" style="left:47%;top:-6%;font-size:30px">✦</span>
+      <span class="twk" style="left:2%;top:40%;font-size:14px;animation-delay:.8s">✦</span>
+      <span class="twk" style="right:6%;top:6%;font-size:18px;animation-delay:1.5s">✦</span>
+      <span class="twk" style="right:12%;bottom:4%;font-size:12px;animation-delay:2.1s">✦</span>
+    </div>
+    <div class="sub en">ONLINE · FULL DIVE</div>
+    <div class="servers" id="servers">
+      <button class="sv on">엘린 1서버 <small style="color:#ff7b6b">혼잡</small></button>
+      <button class="sv">아우렐 2서버 <small style="color:#f2c94c">보통</small></button>
+      <button class="sv">피의 경계 (PK) <small style="color:#6fcf97">원활</small></button>
+    </div>
+    <button class="go" id="go">게임 시작</button>
+  </div>
+  <div id="loading">
+    <div class="ld-art" id="ldArt"></div>
+    <div class="ld-shade"></div>
+    <div class="ld-info">
+      <div class="cls" id="ldCls"></div>
+      <div class="who" id="ldWho"></div>
+      <q id="ldQ"></q>
+    </div>
+    <div class="ld-bar">
+      <div class="ld-tip" id="ldTip"></div>
+      <div class="track"><div class="fill" id="ldFill"></div></div>
+      <div class="pct" id="ldPct">리소스 확인 중… 0%</div>
+    </div>
+  </div>
+  <div class="ver">ver 1.0.17 · ASTRONET</div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <img src="img/logo.png" alt="ASTERA">
+    <nav>
+      <a href="#intro">소개</a><a href="#world">월드</a><a href="#guild">길드</a><a href="#users">유저</a><a href="#guide">가이드</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="intro">
+    <div class="in">
+      <img src="img/logo.png" alt="ASTERA">
+      <h1>이곳의 <b>1G</b>는 현실의 <b>1원</b>.</h1>
+      <p>성인 풀다이브 VR MMORPG · 레벨 없이 장비와 스킬, 발견으로 성장한다</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="feats">
+      <div class="feat reveal"><div class="ic">◉</div><h3>현금 경제</h3><p>게임 재화가 그대로 돈이 된다. 공식 환전 수수료는 30%, 수수료 없는 뒷거래는 사기와 계정 제재를 각오해야 한다.</p></div>
+      <div class="feat reveal"><div class="ic">✧</div><h3>발견으로 성장</h3><p>레벨은 없다. 지역 어딘가의 특정 행동이 히든 스킬을 연다. 배울지, 팔지. 공략이 퍼지면 값은 바닥이다.</p></div>
+      <div class="feat reveal"><div class="ic">☠</div><h3>죽으면 떨군다</h3><p>사망 시 장비와 소지품 중 1~2개 드랍. 10분 안에 못 주우면 남의 것. 그래서 다들 보험을 든다.</p></div>
+      <div class="feat reveal"><div class="ic">⚔</div><h3>풀다이브</h3><p>촉각, 통증, 피로까지 느낀다. 실력은 곧 몸 컨트롤. 장비가 밀려도 손이 빠르면 뒤집는다.</p></div>
+    </div>
+  </div>
+
+  <section id="world">
+    <div class="wrap">
+      <div class="sec-h"><span class="en">WORLD</span><h2>월드맵</h2></div>
+      <div class="tiers" id="tiers"></div>
+    </div>
+  </section>
+
+  <section id="guild">
+    <div class="wrap">
+      <div class="sec-h"><span class="en">GUILD</span><h2>피의 경계를 두고</h2></div>
+      <div class="guilds" id="guilds"></div>
+    </div>
+  </section>
+
+  <section id="users">
+    <div class="wrap">
+      <div class="sec-h"><span class="en">PLAYERS</span><h2>유저 정보</h2></div>
+      <div class="filters" id="filters">
+        <button class="on" data-f="all">전체</button>
+        <button data-f="main">주요 유저</button>
+        <button data-f="guild">길드</button>
+        <button data-f="local">지역</button>
+      </div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section id="guide">
+    <div class="wrap">
+      <div class="sec-h"><span class="en">GUIDE</span><h2>초보자 가이드</h2></div>
+      <div class="cmds">
+        <div class="cmd reveal"><code>!시세</code><p>들고 있는 장비와 소지품의 현재 거래소 시세, 환전 실수령액을 띄운다.</p></div>
+        <div class="cmd reveal"><code>!장비뽑기</code><p>1회 10,000G. 직업에 맞는 무기·방어구 한 점을 뽑는다.</p></div>
+        <div class="cmd reveal"><code>!아바타뽑기</code><p>1회 5,000G. 코스튬 한 벌을 뽑는다. 입으면 아바타 외형이 바뀐다.</p></div>
+      </div>
+      <div class="rules">
+        <div class="rule reveal"><h4>시세 등급</h4><ul>
+          <li class="grade"><span style="color:#bbb">일반</span><span>~ 1천G</span></li>
+          <li class="grade"><span style="color:#6fcf6f">고급</span><span>1만 ~ 10만G</span></li>
+          <li class="grade"><span style="color:#5aa9ff">희귀</span><span>10만 ~ 100만G</span></li>
+          <li class="grade"><span style="color:#c77dff">영웅</span><span>100만 ~ 1000만G</span></li>
+          <li class="grade"><span style="color:#f3d98b">전설 · 히든 스킬북</span><span>1000만G ~</span></li>
+        </ul></div>
+        <div class="rule reveal"><h4>사망과 보험</h4><p>죽으면 장비·소지품 중 1~2개가 바닥에 떨어진다. 10분 안에 회수하지 못하면 근처 유저 몫. 티배깅은 덤이다.</p><p style="margin-top:8px">게임보험 30일 · 50만G 또는 현금 50만 원. 가입 중엔 아무것도 떨어지지 않는다.</p></div>
+        <div class="rule reveal"><h4>악명</h4><p>PK 한 번에 +15, 하루가 지나면 -5.</p><div class="notoriety"></div><div class="nt-l"><span>0</span><span>30 빨간 이름</span><span>70 드랍 3~4개 · 경비 공격</span><span>100</span></div></div>
+        <div class="rule reveal"><h4>종족</h4><ul>
+          <li class="grade"><span>인간</span><span>환전 수수료 20%</span></li>
+          <li class="grade"><span>엘프</span><span>—</span></li>
+          <li class="grade"><span>수인</span><span>귀·꼬리 감각 실재</span></li>
+          <li class="grade"><span>드워프</span><span>강화 성공률 +10%</span></li>
+        </ul></div>
+        <div class="rule reveal"><h4>직업</h4><p>가디언 · 팔라딘 · 마검사 · 어쌔신 · 버서커 · 레인저 · 소서러 · 네크로맨서 · 프리스트 · 바드 · 테이머</p><p style="margin-top:8px;color:var(--muted)">그리고 아직 아무도 확실히 모르는 히든 직업 셋.</p></div>
+        <div class="rule reveal"><h4>토요일 밤</h4><p>매주 토요일 밤, 피의 경계에서 길드 쟁이 열린다. 크로우가 지키고, 헥스가 사고, 베스퍼가 버틴다.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    아스테라는 로판AI 캐릭터챗 작품입니다 · 제작 lollo<br>
+    <button id="replay">로그인 화면 다시 보기</button>
+  </div>
+</footer>
+
+<div id="modal" role="dialog" aria-modal="true">
+  <div class="mbox" id="mbox">
+    <button class="x" id="mx" aria-label="닫기">✕</button>
+    <div class="mimg"><img id="mImg" alt=""></div>
+    <div class="mbody">
+      <div class="cls" id="mCls"></div>
+      <h3 id="mName"></h3>
+      <q id="mQ"></q>
+      <dl id="mDl"></dl>
+      <p class="desc" id="mDesc"></p>
+      <button class="real-btn" id="mReal" hidden></button>
+    </div>
+  </div>
+</div>
+
+<script>
+const REGIONS=[
+ {t:"안전",s:"PK 불가",c:"var(--safe)",r:[
+  ["엘린","시작 마을. 분수 광장엔 파티 모집 외침과, 뉴비를 노리는 친절한 형님이 섞여 있다."],
+  ["아우렐","거래소·환전소·보험 창구·뽑기 상점이 모인 교역 도시. 돈이 제일 많이 도는 곳."],
+  ["카이렌","항구. 오르셀 제도행 배가 뜨고, 부둣가엔 낚싯대만 드리운 쌀먹 유저들."]]},
+ {t:"하급",s:"",c:"var(--low)",r:[
+  ["실피아 초원","바람에 눕는 풀과 약초. 슬라임, 들토끼, 그리고 좋은 자리를 지키는 작업장 계정."],
+  ["미르엔 숲","이끼와 버섯. 먼저 공격하지 않는 숲 정령이 산다."]]},
+ {t:"중급",s:"",c:"var(--mid)",r:[
+  ["모르간 늪","질척한 발목, 독안개. 해독제 값이 시세의 열 배다."],
+  ["오르셀 제도","섬마다 생태가 다르다. 진주, 해적, 동방풍 섬 하나."],
+  ["사하렌","사막 유적과 모래 함정. 히든 스킬이 가장 많다는 소문."]]},
+ {t:"상급",s:"",c:"var(--high)",r:[
+  ["프로스트벨","설산. 폭설이 오면 몇 걸음 앞도 안 보인다. 랭커와 조난자가 같이 산다."],
+  ["베르무트","지하 던전. 파티 필수, 보스 드랍. 돈 받고 태워 주는 버스 기사가 있다."]]},
+ {t:"PK",s:"유저 간 살해 가능",c:"var(--pk)",r:[
+  ["볼카렌","화산. 희귀 재료는 여기서만 난다. 채집꾼과 그걸 노리는 사람들."],
+  ["피의 경계","분쟁 국경. 히든 스킬 전용 지역이자 토요일 밤 길드 쟁의 무대."]]},
+ {t:"미개척",s:"연계 퀘스트로만 진입",c:"var(--wild)",r:[
+  ["셀레스트","구름 위의 하늘 섬. 온 대륙에 흩어진 별 조각을 모아야 길이 열린다."],
+  ["침묵의 해구","소리가 없는 심해. 말 못 하는 인어가 그 입구를 알고 있다."]]}
+];
+const GUILDS=[
+ {n:"CROW",k:"크로우",tag:"무력 · PK",img:"crow",lead:"길드장 흑익 · 인간 마검사",d:"피의 경계를 장악하고 히든 스킬을 독점한다. 공략을 퍼뜨리는 자는 표적이 된다.",id:"heugik"},
+ {n:"HEX",k:"헥스",tag:"돈 · 큰손 용병",img:"hex",lead:"길드장 돈쭐 · 인간 가디언",d:"현질로 꾸린 용병 길드. 실력보다 장비. 공주님 한 명을 길드 전체가 모신다.",id:"donjjul"},
+ {n:"VESPER",k:"베스퍼",tag:"숫자 · 직장인 연합",img:"vesper",lead:"길드장 칼퇴 · 인간 소서러",d:"쌀먹과 직장인의 소규모 연합. 퇴근 후에만 모인다. 목표는 크로우의 독점을 깨는 것.",id:"kaltoe"}
+];
+const P=[
+ {id:"hako",g:"main",n:"하꼬",img:"hako",cls:"인간 바드 · 베스퍼",reg:"사하렌 · 아우렐",q:"값부터 말씀드릴게요. 위치 하나에 20만G, 방송에서 이름 띄워 드리는 건 덤으로요.",d:"공략 스트리머. 칭찬으로 다가와 질문 몇 개로 정보를 캐 간다. 거절해도 웃으며 조건만 바꾼다.",real:{img:"wujin",n:"정우진",i:"29세 · 원룸 방송인",d:"아바타는 생얼에서 다크서클만 지운 정도. 후원 수입은 들쭉날쭉하다."}},
+ {id:"ruru",g:"main",n:"루루",img:"ruru",cls:"엘프 소서러 · 헥스",reg:"아우렐",q:"루루한테 이 정도는 해 줄 수 있잖아, 응?",d:"헥스의 공주. 받는 게 당연하고, 안 주면 삐친 척하다가 금세 다른 걸 조른다. 음성 필터가 가끔 끊긴다.",real:{img:"sunghoon",n:"박성훈",i:"32세 · 야근 잦은 회사원",d:"화장품 색 번호를 묻지도 않았는데 줄줄 읊는 건, 공부를 너무 열심히 해서다."}},
+ {id:"kimchi",g:"main",n:"김치싸대기",img:"kimchi",cls:"수인 어쌔신 · 무소속 PK 용병",reg:"볼카렌 · 피의 경계",q:"죽었어? 아깝다. 갑옷 벗겨진 꼴 좀 보려 했는데.",d:"별명은 싸대기. 돈 주는 길드에 붙고 정은 안 준다. 위기에 빠진 사람 앞에 비웃으면서 나타난다.",real:{img:"doyoon",n:"한도윤",i:"29세 · 편의점 야간 알바",d:"알바 끝나고 낮에 접속한다. PK 수익으로 월세를 낸다."}},
+ {id:"realwoman",g:"main",n:"최용팔",img:"realwoman",cls:"드워프 버서커 · 무소속",reg:"실피아 초원 · 베르무트",q:"ㄹㅇ 여자라고. 용팔이는 닉네임이고. 아니 왜 아무도 안 믿는데, 킹받네.",d:"귓말 테러가 싫어서 아저씨 이름으로 지은 닉네임. 덕분에 이제 아무도 여자라고 믿지 않는다. 정작 넷카마는 첫눈에 알아본다."},
+ {id:"newbie",g:"main",n:"초보입니다",img:"newbie",cls:"엘프 프리스트",reg:"아우렐",q:"아, 잠깐만요. 적어 둘게요.",d:"늘 길을 묻는 초보 유저. 그런데 어쩐지 뒷거래가 있는 곳마다 길을 잃는다."},
+ {id:"ash",g:"guild",n:"애쉬",img:"ash",cls:"인간 네크로맨서 · 크로우 부길드장",reg:"피의 경계 · 볼카렌",q:"통행료는 선불이에요. 내든지, 죽든지.",d:"흑익의 오른팔. 판단이 먼저고 이유는 묻지 않으면 말하지 않는다. 현실 이야기만 나오면 말이 엉킨다."},
+ {id:"heugik",g:"guild",n:"흑익",img:"crow",cls:"인간 마검사 · 크로우 길드장",reg:"피의 경계",q:"그쪽, 길을 잘못 드셨군요.",d:"느릿한 존댓말로 사람을 누른다. 피의 경계는 그의 것이다."},
+ {id:"donjjul",g:"guild",n:"돈쭐",img:"hex",cls:"인간 가디언 · 헥스 길드장",reg:"아우렐",q:"얼마면 돼, 친구?",d:"풀강 장비의 큰손. 루루를 공주로 모신다. 아쉬울 게 없는 얼굴을 하고 있다."},
+ {id:"kaltoe",g:"guild",n:"칼퇴",img:"vesper",cls:"인간 소서러 · 베스퍼 길드장",reg:"피의 경계",q:"죄송한데 저 내일 출근이라서요.",d:"퇴근 후 접속하는 직장인 길드의 장. 마법진을 띄우면서도 하품을 참는다."},
+ {id:"kkang",g:"local",n:"깡통",img:"kkang",cls:"인간 가디언",reg:"엘린",q:"형이 감정해 줄게. 잠깐만 줘 봐.",d:"엘린 광장의 친절한 형님. 뉴비라면 한 번쯤 만난다. 두 번 만나는 사람은 드물다."},
+ {id:"dandding",g:"local",n:"반띵",img:"dandding",cls:"설표 수인 레인저 · 브로커",reg:"아우렐 뒷골목",q:"손님, 수수료 0원에 모십니다. 딱 반반이요.",d:"공식 환전보다 싸게 중개한다. 대체로는."},
+ {id:"jungbotong",g:"local",n:"정보통",img:"jungbotong",cls:"엘프 · 공략 정보상",reg:"사하렌",q:"이건 비밀인데요.",d:"유적 입구에서 공략을 판다. 단골이 누군지는 비밀이다."},
+ {id:"mush",g:"local",n:"버섯왕",img:"mush",cls:"너구리 수인 테이머",reg:"미르엔 숲",q:"자기야, 저기 버섯 좀 따 줄래? 명당 알려 줄게.",d:"육아 틈틈이 접속하는 채집 유저. 수다가 길다."},
+ {id:"yack",g:"local",n:"약팔이",img:"yack",cls:"인간 프리스트",reg:"모르간 늪",q:"해독제 하나 3만 골드. 목숨값이다 아이가.",d:"늪 입구에서 해독제를 판다. 시세의 열 배로."},
+ {id:"snowflower",g:"local",n:"설화",img:"snowflower",cls:"엘프 레인저 · 랭커",reg:"프로스트벨",q:"파티는 받지 않습니다.",d:"혼자 사냥하는 무소속 랭커. 설산의 폭설 속에서도 화살이 빗나가지 않는다."},
+ {id:"bus",g:"local",n:"택시",img:"bus",cls:"드워프 버서커 · 버스 기사",reg:"베르무트",q:"손님~ 보스방까지 출발합니다~",d:"돈 받고 보스까지 태워 준다. 운전은 거칠다."}
+];
+const REAL={
+ realwoman:{img:"daeun",n:"최다은",i:"24세 · 헬스 트레이너",d:"로그아웃해도 얼굴이 그대로다. 그런데도 아무도 안 믿는다."},
+ newbie:{img:"yuna",n:"송유나",i:"28세 · 직장인 (회사명 비공개)",d:"사원증을 늘 목에 걸고 다닌다. 어느 회사인지는 끝까지 말하지 않는다."},
+ ash:{img:"seoyoung",n:"임서영",i:"31세 · 은행 창구 직원",d:"창구에선 상냥하게 웃는다. 퇴근하면 표정이 사라진다."},
+ heugik:{img:"taejun",n:"서태준",i:"34세 · PC방 사장",d:"자기 PC방 카운터에서 접속한다. 손님들은 사장님이 크로우 길드장인 걸 모른다."},
+ donjjul:{img:"jiho",n:"백지호",i:"35세 · 건물주 아들",d:"현질에 한도가 없다. 현실에선 그냥 사람 좋은 동네 형."},
+ kaltoe:{img:"junseo",n:"이준서",i:"30세 · IT 회사 개발자",d:"배포 날에는 접속하지 않는다. 길드원들도 그날만은 이해해 준다."},
+ kkang:{img:"minhyuk",n:"김민혁",i:"26세 · PC방 알바",d:"현실 키 168cm. 아바타 키 190cm."},
+ dandding:{img:"dongcheol",n:"장동철",i:"33세 · 중고차 딜러",d:"현실에서도 수수료 이야기부터 꺼낸다."},
+ jungbotong:{img:"seoah",n:"윤서아",i:"26세 · 휴학생",d:"복학 등록금은 공략 팔아서 모으는 중이다."},
+ mush:{img:"eunji",n:"박은지",i:"33세 · 주부",d:"아이 낮잠 시간이 곧 접속 시간이다."},
+ yack:{img:"minsu",n:"노민수",i:"31세 · 동네 약국 약사",d:"현실 약국에선 약값을 한 번도 올려 받은 적이 없다."},
+ snowflower:{img:"harin",n:"강하린",i:"27세 · 스트리머 데뷔 준비",d:"랭킹 1위를 찍는 날 첫 방송을 켤 생각이다."},
+ bus:{img:"taeho",n:"문태호",i:"31세 · 대리운전 기사",d:"현실에서도 손님을 태운다. 말투는 게임 쪽이 훨씬 친절하다."}
+};
+P.forEach(p=>{if(REAL[p.id])p.real=REAL[p.id]});
+const TIPS=[
+ "TIP · 게임보험에 가입하면 사망해도 아이템이 떨어지지 않습니다.",
+ "TIP · 공략이 퍼지면 히든 스킬북 시세가 50~90% 떨어집니다.",
+ "TIP · 인간 종족은 공식 환전 수수료가 20%입니다.",
+ "TIP · 악명 30부터 이름이 빨갛게 표시됩니다.",
+ "TIP · 뒷거래는 수수료가 없습니다. 대신 책임도 없습니다.",
+ "TIP · 토요일 밤엔 피의 경계에 가까이 가지 마세요."
+];
+const $=s=>document.querySelector(s);
+
+/* 월드 */
+$("#tiers").innerHTML=REGIONS.map(t=>`<div class="tier reveal"><div class="tier-n" style="color:${t.c}">${t.t}<small>${t.s}</small></div><div class="regions">${t.r.map(r=>`<div class="reg" style="--c:${t.c}"><b>${r[0]}</b><p>${r[1]}</p></div>`).join("")}</div></div>`).join("");
+
+/* 길드 */
+$("#guilds").innerHTML=GUILDS.map(g=>`<div class="guild reveal" data-id="${g.id}" tabindex="0"><div class="art" style="background-image:url(img/${g.img}.jpg)"></div><div class="bd"><h3>${g.n}</h3><div class="tag">${g.k} · ${g.tag}</div><p class="lead">${g.lead}</p><p class="tag" style="margin-top:4px">${g.d}</p></div></div>`).join("");
+
+/* 유저 카드 */
+function renderCards(f){
+  $("#cards").innerHTML=P.filter(p=>f==="all"||p.g===f).map(p=>`<button class="card" data-id="${p.id}"><img src="img/${p.img}.jpg" alt="${p.n}" loading="lazy"><div class="meta"><div class="nm">${p.n}</div><div class="cl">${p.cls}</div></div></button>`).join("");
+}
+renderCards("all");
+$("#filters").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll("#filters button").forEach(x=>x.classList.toggle("on",x===b));renderCards(b.dataset.f)});
+
+/* 모달 */
+let cur=null,showReal=false;
+function openP(id){
+  cur=P.find(p=>p.id===id);if(!cur)return;showReal=false;fill();$("#modal").classList.add("on");document.body.style.overflow="hidden";
+}
+function fill(){
+  const p=cur,r=showReal&&p.real;
+  $("#mbox").classList.toggle("real",!!r);
+  $("#mImg").style.opacity=0;
+  setTimeout(()=>{$("#mImg").src=`img/${r?p.real.img:p.img}.jpg`;$("#mImg").alt=r?p.real.n:p.n;$("#mImg").style.opacity=1},150);
+  $("#mCls").textContent=r?"LOG OUT · 현실":p.cls;
+  $("#mName").textContent=r?p.real.n:p.n;
+  $("#mQ").style.display=r?"none":"block";$("#mQ").textContent=p.q;
+  $("#mDl").innerHTML=r?`<dt>정보</dt><dd>${p.real.i}</dd><dt>아바타</dt><dd>${p.n}</dd>`:`<dt>주 활동</dt><dd>${p.reg}</dd>`;
+  $("#mDesc").textContent=r?p.real.d:p.d;
+  const b=$("#mReal");b.hidden=!p.real;if(p.real)b.textContent=r?"▸ 다시 접속하기":"▸ 로그아웃하면…";
+}
+$("#mReal").onclick=()=>{showReal=!showReal;fill()};
+function closeM(){$("#modal").classList.remove("on");document.body.style.overflow=""}
+$("#mx").onclick=closeM;
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal")closeM()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+document.addEventListener("click",e=>{const c=e.target.closest(".card,.guild");if(c)openP(c.dataset.id)});
+
+/* 스크롤 등장 · 메뉴 표시 */
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+const links=[...document.querySelectorAll(".nav nav a")];
+const so=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting)links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+x.target.id))}),{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("section[id]").forEach(s=>so.observe(s));
+
+/* 로그인 */
+const dust=$("#dust");
+for(let i=0;i<34;i++){const m=document.createElement("span");m.className="mote";m.style.left=Math.random()*100+"%";m.style.animationDuration=(8+Math.random()*10)+"s";m.style.animationDelay=(-Math.random()*16)+"s";m.style.opacity=.4+Math.random()*.6;dust.appendChild(m)}
+$("#servers").addEventListener("click",e=>{const b=e.target.closest(".sv");if(!b)return;document.querySelectorAll(".sv").forEach(x=>x.classList.toggle("on",x===b))});
+function enter(){$("#login").classList.add("hide");document.body.style.overflow=""}
+function startLoad(){
+  $("#lgMain").style.display="none";
+  const p=P[Math.floor(Math.random()*P.length)];
+  $("#ldArt").style.backgroundImage=`url(img/${p.img}.jpg)`;
+  $("#ldWho").textContent=p.n;$("#ldCls").textContent=p.cls;$("#ldQ").textContent=p.q;
+  $("#ldTip").textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
+  $("#loading").classList.add("on");
+  let v=0;const t=setInterval(()=>{v=Math.min(100,v+Math.random()*7+2);$("#ldFill").style.width=v+"%";$("#ldPct").textContent=(v<55?"리소스 확인 중… ":v<90?"월드 접속 중… ":"캐릭터 동기화… ")+Math.floor(v)+"%";if(v>=100){clearInterval(t);setTimeout(enter,500)}},120);
+}
+function showLogin(){
+  window.scrollTo(0,0);document.body.style.overflow="hidden";
+  $("#loading").classList.remove("on");$("#ldFill").style.width="0";$("#lgMain").style.display="flex";
+  $("#login").classList.remove("hide");
+}
+$("#go").onclick=startLoad;
+$("#skip").onclick=enter;
+$("#replay").onclick=showLogin;
+document.body.style.overflow="hidden";
+</script>
+</body>
+</html>
